@@ -15,9 +15,9 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 # Imports
-import rsa
 import socket
 import pickle
+import rsa_manual
 
 # Host and Port
 HOST = "0.0.0.0"    # Listen on all interfaces
@@ -30,10 +30,11 @@ server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((HOST, PORT))
 server.listen(5)
 
-# Generate RSA key pair
-print("Generating Alice RSA keys...")
-alice_pub, alice_priv = rsa.newkeys(1024)
-print("Keys generated successfully!")
+# Generate RSA key pair (512-bit primes = 1024-bit key)
+print("Generating Alice RSA keys (1024-bit)...")
+alice_pub, alice_priv = rsa_manual.generate_keypair(bit_length=512)
+print("\nAlice keys generated successfully!")
+print(f"Alice Public Key (e, n): e={alice_pub[0]}, n bit_length={alice_pub[1].bit_length()}")
 
 while True:
     print(bcolors.HEADER + "\nWaiting for Bob to connect..." + bcolors.ENDC)
@@ -51,14 +52,16 @@ while True:
 
             bob_pub = pickle.loads(bobPubPick)
 
-            print(bcolors.OKCYAN + "\nAlice Public Key (unchanged):" + bcolors.ENDC)
-            print(alice_pub)
+            print(bcolors.OKCYAN + "\nAlice Public Key:" + bcolors.ENDC)
+            print(f"  e = {alice_pub[0]}")
+            print(f"  n bit length = {alice_pub[1].bit_length()} bits")
 
             # User message input
             aliceMsg = input(bcolors.OKGREEN + "\nType a message to send to Bob: " + bcolors.ENDC)
 
-            # Encrypt with Bob's public key
-            aliceCipher = rsa.encrypt(aliceMsg.encode("utf-8"), bob_pub)
+            # Encrypt with Bob's public key using manual RSA
+            print(bcolors.OKCYAN + "Encrypting message with Bob's public key..." + bcolors.ENDC)
+            aliceCipher = rsa_manual.encrypt_string(aliceMsg, bob_pub)
 
             # Package cipher + Alice public key
             data = [aliceCipher, alice_pub]
@@ -76,10 +79,12 @@ while True:
             bobCipher = pickle.loads(bobResponse)
 
             print(bcolors.OKGREEN + "\nCipher text from Bob:" + bcolors.ENDC)
-            print(bobCipher)
+            print(f"  Ciphertext (integer): {bobCipher}")
+            print(f"  Bit length: {bobCipher.bit_length()} bits")
 
-            # Decrypt Bob message
-            bobMessage = rsa.decrypt(bobCipher, alice_priv).decode("utf-8")
+            # Decrypt Bob message using manual RSA
+            print(bcolors.OKCYAN + "Decrypting message with Alice's private key..." + bcolors.ENDC)
+            bobMessage = rsa_manual.decrypt_to_string(bobCipher, alice_priv)
             print(bcolors.OKCYAN + "\nDecrypted message from Bob:" + bcolors.ENDC)
             print(bcolors.BOLD + bobMessage + bcolors.ENDC)
 

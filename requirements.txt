@@ -1,0 +1,22 @@
+# ===========================
+# RSA TCP Implementation
+# ===========================
+# 
+# This project uses ONLY Python standard library - no external dependencies required!
+# 
+# Core modules used (all built-in):
+#   - socket     : TCP communication
+#   - pickle     : Data serialization
+#   - secrets    : Cryptographically secure random numbers
+#   - math       : Mathematical operations
+#   - tkinter    : GUI interface (pre-installed with Python)
+#   - threading  : Non-blocking operations
+#
+# Installation:
+#   No pip install needed! Just ensure you have Python 3.7+
+#
+# For virtual environment setup (optional):
+#   python -m venv rsa_tcp_impl_env
+#   .\rsa_tcp_impl_env\Scripts\activate  (Windows)
+#   source rsa_tcp_impl_env/bin/activate (Linux/Mac)
+

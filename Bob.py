@@ -15,19 +15,21 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 import socket
-import rsa
 import pickle
+import rsa_manual
+import time
 
 # Server IP and Port (connect to Alice)
-HOST = HOST = "127.0.0.1"
+HOST = "127.0.0.1"
 PORT = 3000
 
 print("Bob connecting to Alice on port:", PORT)
 
-# Generate Bob RSA keys
-print("Generating Bob RSA keys...")
-bob_pub, bob_priv = rsa.newkeys(1024)
-print("Keys generated successfully!")
+# Generate Bob RSA keys (512-bit primes = 1024-bit key)
+print("Generating Bob RSA keys (1024-bit)...")
+bob_pub, bob_priv = rsa_manual.generate_keypair(bit_length=512)
+print("\nBob keys generated successfully!")
+print(f"Bob Public Key (e, n): e={bob_pub[0]}, n bit_length={bob_pub[1].bit_length()}")
 
 # Serialize Bob's public key to send
 bob_pub_pickled = pickle.dumps(bob_pub)
@@ -54,19 +56,21 @@ while True:
             alice_pub = alice_list[1]
 
             print(bcolors.OKGREEN + "Received encrypted message from Alice:" + bcolors.ENDC)
-            print(alice_cipher)
+            print(f"  Ciphertext (integer): {alice_cipher}")
+            print(f"  Bit length: {alice_cipher.bit_length()} bits")
 
-            # Decrypt Alice's message with Bob's private key
-            alice_plaintext = rsa.decrypt(alice_cipher, bob_priv).decode('utf-8')
+            # Decrypt Alice's message with Bob's private key using manual RSA
+            print(bcolors.OKCYAN + "Decrypting message with Bob's private key..." + bcolors.ENDC)
+            alice_plaintext = rsa_manual.decrypt_to_string(alice_cipher, bob_priv)
             print(bcolors.OKCYAN + "\nDecrypted message from Alice:" + bcolors.ENDC)
             print(bcolors.BOLD + alice_plaintext + bcolors.ENDC)
 
             # Input message to send to Alice
             bob_msg = input(bcolors.OKGREEN + "\nType a message to send to Alice: " + bcolors.ENDC)
-            bob_msg_bytes = bob_msg.encode('utf-8')
 
-            # Encrypt Bob's message using Alice's public key
-            bob_cipher = rsa.encrypt(bob_msg_bytes, alice_pub)
+            # Encrypt Bob's message using Alice's public key with manual RSA
+            print(bcolors.OKCYAN + "Encrypting message with Alice's public key..." + bcolors.ENDC)
+            bob_cipher = rsa_manual.encrypt_string(bob_msg, alice_pub)
             bob_cipher_pickled = pickle.dumps(bob_cipher)
 
             # Send encrypted message to Alice
@@ -76,5 +80,4 @@ while True:
     except Exception as e:
         print(bcolors.FAIL + f"Error: {e}" + bcolors.ENDC)
         print(bcolors.WARNING + "Retrying connection in 5 seconds..." + bcolors.ENDC)
-        import time
         time.sleep(5)

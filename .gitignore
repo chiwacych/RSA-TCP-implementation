@@ -1,0 +1,32 @@
+# Python virtual environment
+rsa_tcp_impl_env/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# IDE specific
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS specific
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Project specific
+PRSA SEMESTER PROJECT 1 FALL 25_1.txt
+*.log
+*.tmp
+docs/
+README.md
+manual_decrypt_gui.py
+rsa_gui_demo.py
