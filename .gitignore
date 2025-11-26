@@ -27,6 +27,6 @@ PRSA SEMESTER PROJECT 1 FALL 25_1.txt
 *.log
 *.tmp
 docs/
-README.md
+#README.md
 manual_decrypt_gui.py
 rsa_gui_demo.py
